@@ -64,7 +64,7 @@ class Resource(object):
         """
         if isinstance(value, dict):
             cls = self.convert_resources.get(name, Resource)
-            return cls(value, api=self.api)
+            return cls(value)
         elif isinstance(value, list):
             new_list = []
             for obj in value:
@@ -173,8 +173,19 @@ class Update(Resource):
 
     def update(self, attributes=None):
         attributes = attributes or self.to_dict()
-        url = utils.join_url(self.path, str(self['id']))
-        new_attributes = self.api.put(url, attributes, self.http_headers())
+        etag = attributes['_etag']
+        attributes.pop('_id')
+        attributes.pop('_etag')
+        attributes.pop('_created')
+        attributes.pop('_updated')
+        attributes.pop('_links')
+        if 'parent' in attributes:
+            attributes.pop('parent')
+        url = utils.join_url(self.path, str(self['_id']))
+        headers = utils.merge_dict(
+            self.http_headers(),
+            {'If-Match': str(etag)})
+        new_attributes = self.api.put(url, attributes, headers)
         self.error = None
         self.merge(new_attributes)
         return self.success()
@@ -209,8 +220,10 @@ class Delete(Resource):
             >>> node = Node.find("507f1f77bcf86cd799439011")
             >>> node.delete()
         """
-        url = utils.join_url(self.path, str(self['id']))
-        new_attributes = self.api.delete(url)
+        url = utils.join_url(self.path, str(self['_id']))
+        etag = self['_etag']
+        headers = {'If-Match': str(etag)}
+        new_attributes = self.api.delete(url, headers)
         self.error = None
         self.merge(new_attributes)
         return self.success()
@@ -218,18 +231,19 @@ class Delete(Resource):
 
 class Post(Resource):
 
-    def post(self, name, attributes=None, cls=Resource, fieldname='id'):
+    def post(self, attributes=None, cls=Resource, fieldname='id'):
         """Constructs url with passed in headers and makes post request via
         post method in api class.
         """
         attributes = attributes or {}
-        url = utils.join_url(self.path, str(self[fieldname]), name)
-        if not isinstance(attributes, Resource):
-            attributes = Resource(attributes, api=self.api)
-        new_attributes = self.api.post(url, attributes.to_dict(), attributes.http_headers())
-        if isinstance(cls, Resource):
+        url = utils.join_url(self.path)
+        """if not isinstance(attributes, Resource):
+            attributes = Resource(attributes, api=self.api)"""
+        new_attributes = self.api.post(url, attributes, {})
+        """if isinstance(cls, Resource):
             cls.error = None
             cls.merge(new_attributes)
             return self.success()
         else:
-            return cls(new_attributes, api=self.api)
+            return cls(new_attributes, api=self.api)"""
+        return self.success()

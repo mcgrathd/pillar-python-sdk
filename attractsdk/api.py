@@ -56,18 +56,21 @@ class Api(object):
         return Api._api_singleton
 
 
-    def basic_auth(self):
-        """Returns base64 encoded token. Used to encode auth credentials
+    def basic_auth(self, token=None):
+        """Returns base64 encoded token. Used to encode credentials
         for retrieving the token.
         """
-        credentials = "{0}:{1}".format(self.username, self.password)
+        if token:
+            credentials = "{0}:0".format(token['token'])
+        else:
+            credentials = "%s:%s" % (self.username, self.password)
         return base64.b64encode(credentials.encode('utf-8')).decode('utf-8').replace("\n", "")
 
     def get_token(self):
         """Generate new token by making a POST request
         """
-        path = "/users"
-        payload = None
+        path = "/tokens"
+        payload = {'username': self.username}
 
         if self.token:
             return self.token
@@ -167,19 +170,19 @@ class Api(object):
         """Make POST request
         """
         return self.request(utils.join_url(self.endpoint, action), 'POST',
-            body=params or {}, headers=headers or {}, refresh_token=refresh_token)
+            body=params or {}, headers=headers or {})
 
     def put(self, action, params=None, headers=None):
         """Make PUT request
         """
         return self.request(utils.join_url(self.endpoint, action), 'PUT',
-            body=params or {}, headers=headers or {}, refresh_token=refresh_token)
+            body=params or {}, headers=headers or {})
 
     def patch(self, action, params=None, headers=None):
         """Make PATCH request
         """
         return self.request(utils.join_url(self.endpoint, action), 'PATCH',
-            body=params or {}, headers=headers or {}, refresh_token=refresh_token)
+            body=params or {}, headers=headers or {})
 
     def delete(self, action, headers=None):
         """Make DELETE request

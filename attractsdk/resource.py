@@ -101,7 +101,7 @@ class Resource(object):
 class Find(Resource):
 
     @classmethod
-    def find(cls, resource_id):
+    def find(cls, resource_id, api=None):
         """Locate resource, usually using ObjectID
 
         Usage::
@@ -109,7 +109,7 @@ class Find(Resource):
             >>> Node.find("507f1f77bcf86cd799439011")
         """
 
-        api = Api.Default()
+        api = api or Api.Default()
 
         url = utils.join_url(cls.path, str(resource_id))
         return cls(api.get(url))
@@ -120,7 +120,7 @@ class List(Resource):
     list_class = Resource
 
     @classmethod
-    def all(cls, params=None):
+    def all(cls, params=None, api=None):
         """Get list of resources, allowing some parameters such as:
         - count
         - start_time
@@ -131,7 +131,7 @@ class List(Resource):
 
             >>> shots = Nodes.all({'count': 2, 'type': 'shot'})
         """
-        api = Api.Default()
+        api = api or Api.Default()
 
         if params is None:
             url = cls.path
@@ -171,7 +171,8 @@ class Update(Resource):
     """Update a resource
     """
 
-    def update(self, attributes=None):
+    def update(self, attributes=None, api=None):
+        api = api or self.api
         attributes = attributes or self.to_dict()
         etag = attributes['_etag']
         attributes.pop('_id')
@@ -185,7 +186,7 @@ class Update(Resource):
         headers = utils.merge_dict(
             self.http_headers(),
             {'If-Match': str(etag)})
-        new_attributes = self.api.put(url, attributes, headers)
+        new_attributes = api.put(url, attributes, headers)
         self.error = None
         self.merge(new_attributes)
         return self.success()
@@ -212,7 +213,7 @@ class Replace(Resource):
 
 class Delete(Resource):
 
-    def delete(self):
+    def delete(self, api=None):
         """Delete a resource
 
         Usage::
@@ -220,10 +221,11 @@ class Delete(Resource):
             >>> node = Node.find("507f1f77bcf86cd799439011")
             >>> node.delete()
         """
+        api = api or self.api
         url = utils.join_url(self.path, str(self['_id']))
         etag = self['_etag']
         headers = {'If-Match': str(etag)}
-        new_attributes = self.api.delete(url, headers)
+        new_attributes = api.delete(url, headers)
         self.error = None
         self.merge(new_attributes)
         return self.success()
@@ -231,15 +233,16 @@ class Delete(Resource):
 
 class Post(Resource):
 
-    def post(self, attributes=None, cls=Resource, fieldname='id'):
+    def post(self, attributes=None, api=None):
         """Constructs url with passed in headers and makes post request via
         post method in api class.
         """
+        api = api or self.api
         attributes = attributes or {}
         url = utils.join_url(self.path)
         """if not isinstance(attributes, Resource):
             attributes = Resource(attributes, api=self.api)"""
-        new_attributes = self.api.post(url, attributes, {})
+        new_attributes = api.post(url, attributes, {})
         """if isinstance(cls, Resource):
             cls.error = None
             cls.merge(new_attributes)

@@ -51,7 +51,10 @@ class Api(object):
             except KeyError:
                 #raise exceptions.MissingConfig("Missing configuration value")
                 print("Missing configuration value. Initialize with Api.Default().")
-                sys.exit(0)
+                # TODO Why is this exit here?
+                # Why is raising an exception when the Default function
+                # is called without arguments all over the code?
+                #sys.exit(0)
 
         return Api._api_singleton
 

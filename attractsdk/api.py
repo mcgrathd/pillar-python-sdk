@@ -5,9 +5,9 @@ import logging
 import platform
 import sys
 
-import attractsdk.utils as utils
-from attractsdk import exceptions
-from attractsdk.config import __version__
+from . import utils
+from . import exceptions
+from .config import __version__
 
 
 class Api(object):
@@ -47,7 +47,8 @@ class Api(object):
                 Api._api_singleton = Api(
                     endpoint=kwargs["endpoint"],
                     username=kwargs["username"],
-                    password=kwargs["password"])
+                    password=kwargs["password"],
+                    token=kwargs["token"] if kwargs.get("token") else None)
             except KeyError:
                 #raise exceptions.MissingConfig("Missing configuration value")
                 print("Missing configuration value. Initialize with Api.Default().")
@@ -76,6 +77,7 @@ class Api(object):
         payload = {'username': self.username}
 
         if self.token:
+            print("no tokens")
             return self.token
         else:
             # If token is not set we do initial request with username and password

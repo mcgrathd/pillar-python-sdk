@@ -1,9 +1,9 @@
-from resource import List
-from resource import Find
-from resource import Create
-from resource import Post
-from resource import Update
-from resource import Delete
+from .resource import List
+from .resource import Find
+from .resource import Create
+from .resource import Post
+from .resource import Update
+from .resource import Delete
 
 
 class Node(List, Find, Create, Post, Update, Delete):

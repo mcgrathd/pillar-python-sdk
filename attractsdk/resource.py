@@ -1,7 +1,7 @@
 import uuid
 
-import attractsdk.utils as utils
-from attractsdk.api import Api
+from . import utils
+from .api import Api
 
 
 class Resource(object):

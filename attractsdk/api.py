@@ -43,20 +43,11 @@ class Api(object):
         """Initialize the API in a singleton style
         """
         if Api._api_singleton is None:
-            try:
-                Api._api_singleton = Api(
-                    endpoint=kwargs["endpoint"],
-                    username=kwargs["username"],
-                    password=kwargs["password"],
-                    token=kwargs["token"] if kwargs.get("token") else None)
-            except KeyError:
-                #raise exceptions.MissingConfig("Missing configuration value")
-                print("Missing configuration value. Initialize with Api.Default().")
-                # TODO Why is this exit here?
-                # Why is raising an exception when the Default function
-                # is called without arguments all over the code?
-                #sys.exit(0)
-
+            Api._api_singleton = Api(
+                endpoint=kwargs["endpoint"] if kwargs.get("endpoint") else None,
+                username=kwargs["username"] if kwargs.get("username") else None,
+                password=kwargs["password"] if kwargs.get("password") else None,
+                token = kwargs["token"] if kwargs.get("token") else None)
         return Api._api_singleton
 
 

@@ -64,6 +64,8 @@ class Api(object):
     def get_token(self):
         """Generate new token by making a POST request
         """
+        return self.token
+        """
         path = "/tokens"
         payload = {'username': self.username}
 
@@ -82,6 +84,7 @@ class Api(object):
                 })
 
             return self.token
+        """
 
     def request(self, url, method, body=None, headers=None):
         """Make HTTP call, formats response and does error handling.
@@ -148,12 +151,17 @@ class Api(object):
         """
         token = self.get_token()
 
-        return {
-            "Authorization": ("Basic %s" % self.basic_auth(token=token)),
+        headers = {
             "Content-Type": "application/json",
             "Accept": "application/json",
             "User-Agent": self.user_agent
         }
+
+        if token:
+            headers['Authorization'] = (
+                "Basic %s" % self.basic_auth(token=token))
+
+        return headers
 
     def get(self, action, headers=None):
         """Make GET request

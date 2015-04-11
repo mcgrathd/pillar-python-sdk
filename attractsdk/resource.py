@@ -150,7 +150,7 @@ class List(Resource):
 
 class Create(Resource):
 
-    def create(self):
+    def create(self, api=None):
         """Create a resource
 
         Usage::
@@ -158,10 +158,10 @@ class Create(Resource):
             >>> node = Node({})
             >>> node.create()
         """
-
+        api = api or self.api
         headers = self.http_headers()
 
-        new_attributes = self.api.post(self.path, self.to_dict(), headers)
+        new_attributes = api.post(self.path, self.to_dict(), headers)
         self.error = None
         self.merge(new_attributes)
         return self.success()

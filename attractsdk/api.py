@@ -42,7 +42,7 @@ class Api(object):
     def Default(**kwargs):
         """Initialize the API in a singleton style
         """
-        if Api._api_singleton is None:
+        if Api._api_singleton is None or kwargs:
             Api._api_singleton = Api(
                 endpoint=kwargs["endpoint"] if kwargs.get("endpoint") else None,
                 username=kwargs["username"] if kwargs.get("username") else None,

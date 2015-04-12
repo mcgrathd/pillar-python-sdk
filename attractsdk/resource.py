@@ -233,7 +233,7 @@ class Delete(Resource):
 
 class Post(Resource):
 
-    def post(self, attributes=None, api=None):
+    def post(self, attributes=None, files=None, api=None):
         """Constructs url with passed in headers and makes post request via
         post method in api class.
         """
@@ -242,7 +242,8 @@ class Post(Resource):
         url = utils.join_url(self.path)
         """if not isinstance(attributes, Resource):
             attributes = Resource(attributes, api=self.api)"""
-        new_attributes = api.post(url, attributes, {})
+        #files = files or {}
+        new_attributes = api.post(url, attributes, {}, files)
         """if isinstance(cls, Resource):
             cls.error = None
             cls.merge(new_attributes)

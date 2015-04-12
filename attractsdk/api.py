@@ -86,9 +86,10 @@ class Api(object):
             return self.token
         """
 
-    def request(self, url, method, body=None, headers=None):
+    def request(self, url, method, body=None, headers=None, files=None):
         """Make HTTP call, formats response and does error handling.
         Uses http_call method in API class.
+        :param files: Dictionary of files to be uploaded via POST
         """
 
         http_headers = utils.merge_dict(self.headers(), headers or {})
@@ -97,7 +98,19 @@ class Api(object):
             logging.info("Attract-Request-Id: {0}".format(http_headers['Attract-Request-Id']))
 
         try:
-            return self.http_call(url, method, data=json.dumps(body), headers=http_headers)
+            # Support for Multipart-Encoded file upload
+            if files and method in ['POST', 'PUT', 'PATCH']:
+                return self.http_call(
+                    url, method,
+                    data=body,
+                    files=files,
+                    headers={
+                    'Authorization': "Basic {0}".format(self.basic_auth(token=self.get_token()))},
+                    )
+            else:
+                return self.http_call(url, method,
+                    data=json.dumps(body),
+                    headers=http_headers)
 
         except exceptions.BadRequest as error:
             return {"error": json.loads(error.content)}
@@ -109,8 +122,8 @@ class Api(object):
     def http_call(self, url, method, **kwargs):
         """Makes a http call. Logs response information.
         """
-        # logging.info("Request[{0}]: {1}".format(method, url))
         response = requests.request(method, url, **kwargs)
+
         # logging.info("Response[{0}]: {1}".format(response.status_code, response.reason))
         return self.handle_response(response, response.content.decode('utf-8'))
 
@@ -159,7 +172,7 @@ class Api(object):
 
         if token:
             headers['Authorization'] = (
-                "Basic %s" % self.basic_auth(token=token))
+                "Basic {0}".format(self.basic_auth(token=token)))
 
         return headers
 
@@ -169,11 +182,11 @@ class Api(object):
         return self.request(utils.join_url(self.endpoint, action), 'GET',
             headers=headers or {})
 
-    def post(self, action, params=None, headers=None):
+    def post(self, action, params=None, headers=None, files=None):
         """Make POST request
         """
         return self.request(utils.join_url(self.endpoint, action), 'POST',
-            body=params or {}, headers=headers or {})
+            body=params or {}, headers=headers or {}, files=files)
 
     def put(self, action, params=None, headers=None):
         """Make PUT request

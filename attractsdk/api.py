@@ -124,8 +124,16 @@ class Api(object):
         """
         response = requests.request(method, url, **kwargs)
 
-        # logging.info("Response[{0}]: {1}".format(response.status_code, response.reason))
-        return self.handle_response(response, response.content.decode('utf-8'))
+        # logging.info("Response[{0}]: {1}".format(response.status_code, reisponse.reason))
+
+        try:
+            error = self.handle_response(response,
+                                         response.content.decode('utf-8'))
+        except:
+            print (response.content)
+            raise
+
+        return error
 
     def handle_response(self, response, content):
         """Check HTTP response codes

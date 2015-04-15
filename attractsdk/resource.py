@@ -180,8 +180,6 @@ class Update(Resource):
         attributes.pop('_created')
         attributes.pop('_updated')
         attributes.pop('_links')
-        if 'parent' in attributes:
-            attributes.pop('parent')
         url = utils.join_url(self.path, str(self['_id']))
         headers = utils.merge_dict(
             self.http_headers(),

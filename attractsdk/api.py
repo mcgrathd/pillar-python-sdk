@@ -47,7 +47,7 @@ class Api(object):
                 endpoint=kwargs["endpoint"] if kwargs.get("endpoint") else None,
                 username=kwargs["username"] if kwargs.get("username") else None,
                 password=kwargs["password"] if kwargs.get("password") else None,
-                token = kwargs["token"] if kwargs.get("token") else None)
+                token=kwargs["token"] if kwargs.get("token") else None)
         return Api._api_singleton
 
 
@@ -96,18 +96,16 @@ class Api(object):
 
         if http_headers.get('Attract-Request-Id'):
             logging.info("Attract-Request-Id: {0}".format(http_headers['Attract-Request-Id']))
-
         try:
             # Support for Multipart-Encoded file upload
             if files and method in ['POST', 'PUT', 'PATCH']:
                 return self.http_call(
                     url, method,
-                    data=body,
+                    data={'properties': {}},
                     files=files,
-                    headers={
-                    'Authorization': "Basic {0}".format(self.basic_auth(token=self.get_token()))},
-                    )
+                    headers=http_headers)
             else:
+                http_headers['Content-Type'] = "application/json"
                 return self.http_call(url, method,
                     data=json.dumps(body),
                     headers=http_headers)
@@ -173,7 +171,7 @@ class Api(object):
         token = self.get_token()
 
         headers = {
-            "Content-Type": "application/json",
+            #"Content-Type": "application/json",
             "Accept": "application/json",
             "User-Agent": self.user_agent
         }
@@ -202,11 +200,11 @@ class Api(object):
         return self.request(utils.join_url(self.endpoint, action), 'PUT',
             body=params or {}, headers=headers or {})
 
-    def patch(self, action, params=None, headers=None):
+    def patch(self, action, params=None, headers=None, files=None):
         """Make PATCH request
         """
         return self.request(utils.join_url(self.endpoint, action), 'PATCH',
-            body=params or {}, headers=headers or {})
+            body=params or {}, headers=headers or {}, files=files)
 
     def delete(self, action, headers=None):
         """Make DELETE request

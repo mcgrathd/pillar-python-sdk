@@ -200,10 +200,22 @@ class Replace(Resource):
         >>> node.replace([{'op': 'replace', 'path': '/name', 'value': 'Renamed Shot 2' }])
     """
 
-    def replace(self, attributes=None):
+    def replace(self, attributes=None, files=None, api=None):
+        api = api or self.api
         attributes = attributes or self.to_dict()
-        url = utils.join_url(self.path, str(self['id']))
-        new_attributes = self.api.patch(url, attributes, self.http_headers())
+        etag = attributes['_etag']
+        attributes.pop('_id')
+        attributes.pop('_etag')
+        attributes.pop('_created')
+        attributes.pop('_updated')
+        attributes.pop('_links')
+        if 'parent' in attributes:
+            attributes.pop('parent')
+        url = utils.join_url(self.path, str(self['_id']))
+        headers = utils.merge_dict(
+            self.http_headers(),
+            {'If-Match': str(etag)})
+        new_attributes = api.patch(url, attributes, headers, files)
         self.error = None
         self.merge(new_attributes)
         return self.success()

@@ -260,4 +260,5 @@ class Post(Resource):
             return self.success()
         else:
             return cls(new_attributes, api=self.api)"""
+        self.merge(new_attributes)
         return self.success()

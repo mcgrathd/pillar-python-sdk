@@ -14,14 +14,13 @@ class binaryFile(List, Find, Create, Post, Update, Delete, Replace):
     """
     path = "binary_files"
 
-    def post_file(self, file_, api=None):
-        """Stores a file on the database.
+    def post_file(self, file_,  api=None):
+        """Stores a file on the database or static folder.
         :param file: A file object
         """
         api = api or self.api
         url = utils.join_url(self.path)
         files = {'data': file_}
-        print (files)
         new_attributes = api.post(url, {}, {}, files)
         # self.error = None
         self.merge(new_attributes)

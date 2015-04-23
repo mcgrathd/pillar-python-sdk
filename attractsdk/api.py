@@ -101,7 +101,7 @@ class Api(object):
             if files and method in ['POST', 'PUT', 'PATCH']:
                 return self.http_call(
                     url, method,
-                    data={'properties': {}},
+                    data=body,
                     files=files,
                     headers=http_headers)
             else:

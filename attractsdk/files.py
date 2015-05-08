@@ -13,6 +13,7 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
     """
     path = "files"
     file_server_path = "file_server/file"
+    build_previews_server_path = "file_server/build_previews"
 
     def post_file(self, file_path, name=None, api=None):
         """Stores a file on the database or static folder.
@@ -26,4 +27,13 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
         file_.close()
         # self.error = None
         # self.merge(new_attributes)
+        return self.success()
+
+    def build_previews(self, path, api=None):
+        """Stores a file on the database or static folder.
+        :param path: A file path
+        """
+        api = api or self.api
+        url = utils.join_url(self.build_previews_server_path, path)
+        api.get(url)
         return self.success()

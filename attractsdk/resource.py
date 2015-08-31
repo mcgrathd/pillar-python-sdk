@@ -114,6 +114,30 @@ class Find(Resource):
         url = utils.join_url(cls.path, str(resource_id))
         return cls(api.get(url))
 
+    @classmethod
+    def find_first(cls, params, api=None):
+        """Get list of resources, allowing some parameters such as:
+        - count
+        - start_time
+        - sort_by
+        - sort_order
+
+        Usage::
+
+            >>> shots = Nodes.all({'count': 2, 'type': 'shot'})
+        """
+        api = api or Api.Default()
+
+        # Force delivery of only 1 result
+        params['max_results'] = 1
+        url = utils.join_url_params(cls.path, params)
+
+        response = api.get(url)
+        res = cls(response)
+        if res._items:
+            return res._items[0]
+        else:
+            return None
 
 class List(Resource):
 

@@ -1,4 +1,4 @@
-The Attract Python SDK is released under the BSD License:
+The Pillar Python SDK is released under the BSD License:
 
     Copyright (c) 2015, Blender Foundation
     Copyright (c) 2013-2014, PayPal

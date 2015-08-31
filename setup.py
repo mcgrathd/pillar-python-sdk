@@ -2,11 +2,11 @@
 from distutils.core import setup
 
 import sys, os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'attractsdk'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'pillarsdk'))
 from config import __version__, __pypi_packagename__, __github_username__, __github_reponame__
 
 long_description="""
-    The Attract REST SDK provides Python APIs to communicate to the Attract webservices.
+    The Pillar REST SDK provides Python APIs to communicate to the Pillar webservices.
   """
 
 # license='Free BSD'
@@ -20,11 +20,11 @@ setup(
   version= __version__,
   author='Francesco Siddi, PayPal',
   author_email='francesco@blender.org',
-  packages=['attractsdk'],
+  packages=['pillarsdk'],
   scripts=[],
   url=url,
   license='BSD License',
-  description='The Attract REST SDK provides Python APIs to communicate to the Attract webservices.',
+  description='The Pillar REST SDK provides Python APIs to communicate to the Pillar webservices.',
   long_description=long_description,
   install_requires=['requests>=1.0.0', 'six>=1.0.0', 'pyopenssl>=0.14'],
   classifiers=[
@@ -36,5 +36,5 @@ setup(
     'Programming Language :: Python :: 2.7',
     'Topic :: Software Development :: Libraries :: Python Modules'
   ],
-  keywords=['attract', 'rest', 'sdk', 'tracking', 'film', 'production']
+  keywords=['pillar', 'rest', 'sdk', 'tracking', 'film', 'production']
 )

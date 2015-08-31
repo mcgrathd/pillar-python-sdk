@@ -12,8 +12,8 @@ def join_url(url, *paths):
 
     Usage::
 
-        >>> utils.join_url("attract:5000", "shots")
-        attract:5000/shots
+        >>> utils.join_url("pillar:5000", "shots")
+        pillar:5000/shots
     """
     for path in paths:
         url = re.sub(r'/?$', re.sub(r'^/?', '/', path), url)
@@ -25,8 +25,8 @@ def join_url_params(url, params):
 
     Usage::
 
-        >>> utils.join_url_params("attract:5000/shots", {"page-id": 2, "NodeType": "Shot Group"})
-        attract:5000/shots?page-id=2&NodeType=Shot+Group
+        >>> utils.join_url_params("pillar:5000/shots", {"page-id": 2, "NodeType": "Shot Group"})
+        pillar:5000/shots?page-id=2&NodeType=Shot+Group
     """
     return url + "?" + urlencode(params)
 

@@ -15,7 +15,7 @@ class Api(object):
     # User-Agent for HTTP request
     library_details = "requests {0}; python {1}".format(
         requests.__version__, platform.python_version())
-    user_agent = "Attract-Python-SDK/{0} ({1})".format(
+    user_agent = "Pillar-Python-SDK/{0} ({1})".format(
         __version__, library_details)
     _api_singleton = None
     def __init__(self, options=None, **kwargs):
@@ -23,7 +23,7 @@ class Api(object):
 
         Usage::
 
-            >>> from attractsdk import Api
+            >>> from pillarsdk import Api
             >>> Api.Default(
                     endpoint="http://localhost:5000",
                     username='USERNAME',
@@ -94,8 +94,8 @@ class Api(object):
 
         http_headers = utils.merge_dict(self.headers(), headers or {})
 
-        if http_headers.get('Attract-Request-Id'):
-            logging.info("Attract-Request-Id: {0}".format(http_headers['Attract-Request-Id']))
+        if http_headers.get('Pillar-Request-Id'):
+            logging.info("Pillar-Request-Id: {0}".format(http_headers['Pillar-Request-Id']))
         try:
             # Support for Multipart-Encoded file upload
             if files and method in ['POST', 'PUT', 'PATCH']:

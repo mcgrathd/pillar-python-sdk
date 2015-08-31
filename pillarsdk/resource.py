@@ -31,7 +31,7 @@ class Resource(object):
         """Generate HTTP header
         """
         return utils.merge_dict(self.header, self.headers,
-            {'Attract-Request-Id': self.generate_request_id()})
+            {'Pillar-Request-Id': self.generate_request_id()})
 
     def __str__(self):
         return self.__data__.__str__()

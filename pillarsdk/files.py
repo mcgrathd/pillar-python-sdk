@@ -47,7 +47,6 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
         """
         api = api or self.api
         files = self.all({'where': '{"parent": "%s"}' % self._id}, api=api)
-        print files._items
         if not files._items:
             return None
         return files

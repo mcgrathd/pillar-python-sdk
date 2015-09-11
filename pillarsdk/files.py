@@ -50,3 +50,23 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
         if not files._items:
             return None
         return files
+
+    def thumbnail(self, size, api=None):
+        """Delivers a single thumbnail (child) file for an image. Before returning
+        we check that the parent is actually an image.
+        :param path: the size (s, b, t, m, l, h)
+        """
+        api = api or self.api
+        if size in ['s', 'b', 't', 'm', 'l', 'h']:
+            # We chack from the content_type if the file is an image
+            if self.content_type.split('/')[0] == 'image':
+                thumbnail = self.find_first({
+                    'where': '{"parent" : "%s", "size" : "%s"}'\
+                        % (self._id, size),
+                    }, api=api)
+                return thumbnail
+            else:
+                return None
+        else:
+            raise ValueError("Size should be (s, b, t, m, l, h)")
+

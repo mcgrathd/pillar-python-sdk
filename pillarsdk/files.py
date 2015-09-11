@@ -51,7 +51,18 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
             return None
         return files
 
-    def thumbnail(self, size, api=None):
+    def thumbnail(self, size):
+        """Utility to replace a component of an image link so that it points to
+        a thumbnail, without querying the database.
+        """
+        if size in ['s', 'b', 't', 'm', 'l', 'h']:
+            name = self.link.split('.')[0]
+            return "{0}-{1}.jpg".format(name, size)
+        else:
+            raise ValueError("Size should be (s, b, t, m, l, h)")
+
+
+    def thumbnail_file(self, size, api=None):
         """Delivers a single thumbnail (child) file for an image. Before returning
         we check that the parent is actually an image.
         :param path: the size (s, b, t, m, l, h)

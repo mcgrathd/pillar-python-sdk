@@ -12,8 +12,8 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
     """Node class wrapping the REST nodes endpoint
     """
     path = "files"
-    file_server_path = "file_server/file"
-    build_previews_server_path = "file_server/build_previews"
+    file_server_path = "file_storage/file"
+    build_previews_server_path = "file_storage/build_previews"
 
     def post_file(self, file_path, name=None, api=None):
         """Stores a file on the database or static folder.
@@ -60,7 +60,6 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
             return "{0}-{1}.jpg".format(name, size)
         else:
             raise ValueError("Size should be (s, b, t, m, l, h)")
-
 
     def thumbnail_file(self, size, api=None):
         """Delivers a single thumbnail (child) file for an image. Before returning

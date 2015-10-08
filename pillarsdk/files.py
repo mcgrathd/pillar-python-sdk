@@ -1,3 +1,4 @@
+from os.path import splitext
 from .resource import List
 from .resource import Find
 from .resource import Create
@@ -56,8 +57,8 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
         a thumbnail, without querying the database.
         """
         if size in ['s', 'b', 't', 'm', 'l', 'h']:
-            name = self.link.split('.')[0]
-            return "{0}-{1}.jpg".format(name, size)
+            root, ext = splitext(self.link)
+            return "{0}-{1}.jpg".format(root, size)
         else:
             raise ValueError("Size should be (s, b, t, m, l, h)")
 

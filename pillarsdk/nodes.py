@@ -31,6 +31,25 @@ class Node(List, Find, Create, Post, Update, Delete, Replace):
             url = utils.join_url_params(url, params)
         return cls(api.get(url))
 
+    @classmethod
+    def find_one(cls, params, api=None):
+        """Get one resource starting from parameters different than the resource
+        id. TODO if more than one match for the query is found, raise exception.
+        """
+        api = api or Api.Default()
+
+        # Force delivery of only 1 result
+        params['max_results'] = 1
+        url = utils.join_url_params(cls.path, params)
+
+        response = api.get(url)
+        # Keep the response a dictionary, and cast it later into an object.
+        if response['_items']:
+            return cls(response['_items'][0])
+        else:
+            return None
+
+
     def update(self, attributes=None, api=None):
         api = api or self.api
         attributes = attributes or self.to_dict()

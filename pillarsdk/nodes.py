@@ -5,6 +5,7 @@ from .resource import Post
 from .resource import Update
 from .resource import Delete
 from .resource import Replace
+from .exceptions import ResourceNotFound
 
 from . import utils
 from .api import Api
@@ -47,7 +48,7 @@ class Node(List, Find, Create, Post, Update, Delete, Replace):
         if response['_items']:
             return cls(response['_items'][0])
         else:
-            return None
+            raise ResourceNotFound(response)
 
 
     def update(self, attributes=None, api=None):
